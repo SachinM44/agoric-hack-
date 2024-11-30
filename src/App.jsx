@@ -1,49 +1,52 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import Login from "./screens/login";
-import CreateAccount from "./screens/createAcc";
-import "./App.css";
+import React, { useState } from 'react';
+import Login from './screens/login';
+import CreateAccount from './screens/createAcc';
+import Dashboard from './screens/dashboard';
+import './App.css';
 
 function App() {
-  return (
-    <Router>
-      <div className="App">
-        <Routes>
-          {/* Define the Login page */}
-          <Route
-            path="/"
-            element={
-              <div>
-                <Login />
-                <Link
-                  to="/create-account"
-                  className="mt-4 text-white underline block"
-                >
-                  Don't have an account? Create one
-                </Link>
-              </div>
-            }
-          />
+  const [currentScreen, setCurrentScreen] = useState('login');
 
-          {/* Define the Create Account page */}
-          <Route
-            path="/create-account"
-            element={
-              <div>
-                <CreateAccount />
-                <Link
-                  to="/"
-                  className="mt-4 text-white underline block"
-                >
-                  Already have an account? Log in
-                </Link>
-              </div>
-            }
-          />
-        </Routes>
-      </div>
-    </Router>
+  // Handle successful login and navigate to createAccount screen
+  const handleLoginSuccess = () => {
+    setCurrentScreen('createAccount');
+  };
+
+  // Handle successful account creation and navigate to dashboard
+  const handleCreateSuccess = () => {
+    setCurrentScreen('dashboard');
+  };
+
+  return (
+    <div className="App">
+      {currentScreen === 'login' && (
+        <>
+          <Login onLoginSuccess={handleLoginSuccess} />
+          <button 
+            onClick={() => setCurrentScreen('createAccount')}
+            className="mt-4 text-white underline"
+          >
+            Don't have an account? Create one
+          </button>
+        </>
+      )}
+      
+      {currentScreen === 'createAccount' && (
+        <>
+          <CreateAccount onCreateSuccess={handleCreateSuccess} />
+          <button 
+            onClick={() => setCurrentScreen('login')}
+            className="mt-4 text-white underline"
+          >
+            Already have an account? Log in
+          </button>
+        </>
+      )}
+
+      {currentScreen === 'dashboard' && <Dashboard />}
+    </div>
   );
 }
 
 export default App;
+

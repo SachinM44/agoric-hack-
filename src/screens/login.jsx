@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { AlertCircle } from "lucide-react";
 import metamaskLogo from "../assets/metamask.png";
 
-export default function Login() {
+export default function Login({ onLoginSuccess }) {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [error, setError] = useState(null);
 
@@ -12,8 +12,16 @@ export default function Login() {
 
     if (typeof window.ethereum !== "undefined") {
       try {
+        // Request to connect to MetaMask
         await window.ethereum.request({ method: "eth_requestAccounts" });
         console.log("Logged in with MetaMask");
+
+        // Show alert message after successful MetaMask connection
+        alert("You have connected with MetaMask wallet!");
+
+        // Call the parent function to transition to CreateAccount screen
+        onLoginSuccess();  // Trigger the screen change
+
       } catch (err) {
         setError("Failed to login. Please try again.");
         console.error(err);
