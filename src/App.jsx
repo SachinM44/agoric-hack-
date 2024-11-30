@@ -1,37 +1,49 @@
-import React, { useState } from 'react'
-import Login from './screens/login'
-import CreateAccount from './screens/createAcc'
-import './App.css'
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import Login from "./screens/login";
+import CreateAccount from "./screens/createAcc";
+import "./App.css";
 
 function App() {
-  const [currentScreen, setCurrentScreen] = useState('login')
-
   return (
-    <div className="App">
-      {currentScreen === 'login' ? (
-        <>
-          <Login />
-          <button 
-            onClick={() => setCurrentScreen('createAccount')}
-            className="mt-4 text-white underline"
-          >
-            Don't have an account? Create one
-          </button>
-        </>
-      ) : (
-        <>
-          <CreateAccount />
-          <button 
-            onClick={() => setCurrentScreen('login')}
-            className="mt-4 text-white underline"
-          >
-            Already have an account? Log in
-          </button>
-        </>
-      )}
-    </div>
-  )
+    <Router>
+      <div className="App">
+        <Routes>
+          {/* Define the Login page */}
+          <Route
+            path="/"
+            element={
+              <div>
+                <Login />
+                <Link
+                  to="/create-account"
+                  className="mt-4 text-white underline block"
+                >
+                  Don't have an account? Create one
+                </Link>
+              </div>
+            }
+          />
+
+          {/* Define the Create Account page */}
+          <Route
+            path="/create-account"
+            element={
+              <div>
+                <CreateAccount />
+                <Link
+                  to="/"
+                  className="mt-4 text-white underline block"
+                >
+                  Already have an account? Log in
+                </Link>
+              </div>
+            }
+          />
+        </Routes>
+      </div>
+    </Router>
+  );
 }
 
-export default App
-
+export default App;
