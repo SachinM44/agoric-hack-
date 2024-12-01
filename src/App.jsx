@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 
-import CreateAccount from "./screens/createAcc"
+import CreateAccount from "./screens/createAcc";
 import Dashboard from "./screens/dashboard";
 import Login from "./screens/login";
 import CreateEvent from "./screens/createEvent";
-
+import BuyTicket from "./screens/buyTicket"; // Import BuyTicket screen
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState("login");
@@ -15,6 +15,14 @@ function App() {
 
   const handleCreateSuccess = () => {
     setCurrentScreen("dashboard");
+  };
+
+  const handleDashSuccess = () => {
+    setCurrentScreen("createEvent");
+  };
+
+  const handleBuyTicket = () => {
+    setCurrentScreen("buyTicket");
   };
 
   return (
@@ -44,11 +52,38 @@ function App() {
           </>
         )}
 
-        {currentScreen === "dashboard" && <Dashboard />}
+        {currentScreen === "dashboard" && (
+          <>
+            <Dashboard onCreateSuccess={handleDashSuccess} />
+            <button
+              onClick={() => setCurrentScreen("createEvent")}
+              className="mt-4 text-white underline text-center w-full"
+            >
+              Host an Event
+            </button>
+            <button
+              onClick={handleBuyTicket} // Add navigation to BuyTicket screen
+              className="mt-4 text-white underline text-center w-full"
+            >
+              Buy Ticket
+            </button>
+          </>
+        )}
+
+        {currentScreen === "createEvent" && (
+          <>
+            <CreateEvent />
+          </>
+        )}
+
+        {currentScreen === "buyTicket" && (
+          <>
+            <BuyTicket /> {/* Display BuyTicket screen */}
+          </>
+        )}
       </div>
     </div>
   );
 }
 
 export default App;
-
