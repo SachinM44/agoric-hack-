@@ -1,53 +1,77 @@
-import React from 'react';
-
-// Card component for better organization
-const ProductCard = ({ image, price }) => (
-  <div className="bg-white rounded-lg shadow-xl overflow-hidden">
-    <img 
-      src={image || "/placeholder.svg?height=200&width=300"} 
-      alt="Product" 
-      className="w-full h-48 object-cover"
-    />
-    <div className="p-4">
-      <div className="flex justify-between items-center mb-2">
-        <p className="text-lg font-semibold">Product Name</p>
-        <p className="text-blue-600 font-bold">${price || '0.00'}</p>
-      </div>
-      <button 
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
-        onClick={() => alert('Buy functionality to be implemented')}
-      >
-        Buy Now
-      </button>
-    </div>
-  </div>
-);
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
-  // Mock data for 6 cards
-  const products = Array(6).fill({
-    image: "/placeholder.svg?height=200&width=300",
-    price: "0.00"
-  });
+  const [walletAddress, setWalletAddress] = useState(null);
+  const [balance, setBalance] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const loadWalletData = async () => {
+      if (window.getOfflineSigner) {
+        try {
+          const chainId = "cosmoshub-4"; // Update to your chain ID
+          const offlineSigner = window.getOfflineSigner(chainId);
+          const accounts = await offlineSigner.getAccounts();
+
+          setWalletAddress(accounts[0].address);
+
+          // Fetch balance or other relevant data here
+          const fetchedBalance = await fetchBalance(accounts[0].address);
+          setBalance(fetchedBalance);
+        } catch (err) {
+          console.error("Error fetching wallet data:", err);
+          alert("Error fetching wallet data.");
+          navigate("/login"); // Redirect to login if wallet is not connected
+        }
+      } else {
+        alert("Keplr is not connected. Please connect your Keplr wallet.");
+        navigate("/login"); // Redirect to login if wallet is not connected
+      }
+    };
+
+    loadWalletData();
+  }, [navigate]);
+
+  const fetchBalance = async (address) => {
+    // Example function to fetch balance from the blockchain via Keplr
+    // You need to implement fetching balance logic for Agoric or other chains
+    return "1000"; // Return a mock balance for now
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-500 to-indigo-600 py-8 px-4">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold text-white mb-8 text-center">
-          Welcome to Fair Pass Dashboard
-        </h1>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {products.map((product, index) => (
-            <ProductCard 
-              key={index}
-              image={product.image}
-              price={product.price}
-            />
-          ))}
+    <div className="flex flex-col items-center mt-10">
+      <div className="bg-white rounded-xl shadow-md overflow-hidden w-full max-w-md mb-6">
+        <div className="p-8">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">
+            Welcome to Your Dashboard
+          </h2>
+          <div className="space-y-2">
+            <p className="text-gray-600">
+              <span className="font-semibold">Wallet Address:</span>
+              <span className="ml-2 text-sm break-all">{walletAddress}</span>
+            </p>
+            <p className="text-gray-600">
+              <span className="font-semibold">Balance:</span>
+              <span className="ml-2">{balance}</span>
+            </p>
+          </div>
         </div>
+      </div>
+
+      <div className="flex space-x-4">
+        <button
+          className="bg-blue-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-blue-700 transition"
+          onClick={() => navigate("/CreateEvent")}
+        >
+          Host Event
+        </button>
+        <button
+          className="bg-green-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-green-700 transition"
+        >
+          Buy Ticket
+        </button>
       </div>
     </div>
   );
 }
-
