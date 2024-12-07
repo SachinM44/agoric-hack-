@@ -10,10 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "buffer": "^6.0.3",
+    "ethers": "^6.13.4",
     "lucide-react": "^0.462.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^7.0.1"
+    "react-router-dom": "^7.0.2",
+    "react-scripts": "^5.0.1",
+    "tonweb": "^0.0.66"
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",

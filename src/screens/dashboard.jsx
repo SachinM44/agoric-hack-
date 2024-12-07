@@ -1,22 +1,39 @@
-// dashboard.jsx
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import BuyTicket from './buyTicket.jsx';
+import React, { useEffect, useState } from 'react';
+import { getUserTickets } from '../web.js';  // Import the getUserTickets function from web.js
 
 const Dashboard = () => {
-    const navigate = useNavigate();
+  const [tickets, setTickets] = useState([]);
 
-    const handleBuyTicket = (event) => {
-        // Your handleBuyTicket logic here
-        console.log('Buying ticket for event:', event);
+  // Fetch user tickets when the component mounts
+  useEffect(() => {
+    const fetchTickets = async () => {
+      try {
+        const userTickets = await getUserTickets();  // Fetch tickets after connecting to Keplr
+        setTickets(userTickets);
+      } catch (error) {
+        console.error('Error fetching user tickets:', error);
+      }
     };
 
-    return (
-        <div>
-            <h1>Dashboard</h1>
-            <BuyTicket onBuyClick={handleBuyTicket} />
-        </div>
-    );
+    fetchTickets();
+  }, []);
+
+  return (
+    <div>
+      <h2>Your Tickets</h2>
+      <ul>
+        {tickets.length > 0 ? (
+          tickets.map(ticket => (
+            <li key={ticket.id}>
+              Ticket ID: {ticket.id}, Price: {ticket.price} TON
+            </li>
+          ))
+        ) : (
+          <li>No tickets found</li>
+        )}
+      </ul>
+    </div>
+  );
 };
 
 export default Dashboard;
